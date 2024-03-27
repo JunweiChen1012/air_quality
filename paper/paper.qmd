@@ -1,0 +1,329 @@
+---
+title: "Air Quality Across Economies: Unveiling the Relationship Between GDP and Pollution in Global Urban Centers"
+execute:
+  echo: false
+  message: false
+  warning: false
+title-block-banner: true
+author:  
+   - Junwei Chen
+date: today
+date-format: long
+format: 
+   pdf:
+    fig-pos: 'H'
+editor: visual
+toc: true
+number-sections: true
+abstract: "This study delves into the intricate relationship between economic development and air quality in urban centers worldwide, focusing on the impact of Gross Domestic Product (GDP) per capita on the Air Quality Index (AQI) for key pollutants, including Particulate Matter (PM2.5), Nitrogen Dioxide (NO2), Ozone (O3), and Carbon Monoxide (CO). Leveraging a comprehensive dataset, we conducted exploratory data analysis, correlation studies, and regression analysis to uncover patterns and correlations that illuminate the dynamics between economic activity and environmental health outcomes. Our findings reveal a nuanced landscape where higher GDP per capita generally correlates with better air quality, yet this relationship is complex and influenced by various factors, including urbanization, industrialization, and environmental policies. The study underscores the critical need for integrated approaches that balance economic growth with sustainable urban planning and environmental management to improve air quality and public health. By offering insights into the socio-economic dimensions of air pollution, this research contributes to the broader discourse on sustainable development and environmental stewardship in the face of global urbanization challenges."
+thanks: "Code and reporduction data are available at: https://github.com/JunweiChen1012/air_quality"
+bibliography: ref.bib
+---
+
+# Introduction
+
+Air quality emerges as a paramount environmental and public health concern that afflicts millions globally, with urban centers at the epicenter of this crisis. The dense aggregation of people, vehicles, and industrial operations in cities catalyzes the proliferation of air pollutants, severely undermining urban health landscapes. The World Health Organization (WHO) underscores the profound adverse effects of air pollutants such as particulate matter (PM~2.5~ and PM~10~), nitrogen dioxide (NO~2~), ozone (O~3~), and carbon monoxide (CO) on human well-being. These pollutants are linked with an increased incidence of respiratory ailments, cardiovascular conditions, and premature mortality, spotlighting the dire consequences of compromised air quality [@world18health].
+
+The complexities of urban air pollution are further magnified by the varied sources of these noxious substances. For instance, PM~2.5~ and PM~10~ originate from both natural occurrences and human activities, including construction, transportation, and industrial processes. These particulates, due to their minute size, penetrate deeply into the respiratory tract, posing significant health risks [@liu2019ambient]. Nitrogen dioxide, a byproduct of fuel combustion, exacerbates respiratory diseases and heightens susceptibility to infections, particularly among children and the elderly [@landrigan2018lancet]. Ozone, though protective in the stratosphere, becomes a potent irritant at ground level, formed by the interaction of sunlight with pollutants from vehicle emissions and industrial activities, leading to widespread respiratory discomfort and diminished lung function [@bell2014more]. Moreover, carbon monoxide, primarily emitted from incomplete combustion processes, impairs oxygen delivery within the body, culminating in cardiovascular and neurological impairments [@raub2000carbon].
+
+Acknowledging the criticality of these issues, recent scholarly endeavors have sought to delineate the epidemiological impacts of air pollution, revealing a stark correlation between elevated pollutant concentrations and augmented rates of hospital admissions and mortality due to air pollution-related health conditions [@di2017air]. This burgeoning body of evidence underscores the urgency of developing and implementing robust air quality management strategies, particularly in densely populated urban locales where the confluence of human activity and pollution is most pronounced.
+
+As the global population continues to urbanize at an unprecedented rate, the challenge of mitigating air pollution and safeguarding public health becomes increasingly daunting. It necessitates concerted efforts from policymakers, researchers, and communities to innovate sustainable urban planning and transportation solutions that can significantly curtail emissions of harmful pollutants. Furthermore, enhancing public awareness and engagement in air quality issues is imperative for fostering a culture of environmental stewardship and public health advocacy.
+
+Recent studies have further emphasized the importance of understanding the dynamics of air pollution in urban settings. For example, @cohen2017estimates demonstrated the global burden of disease attributable to ambient air pollution, underscoring the urgent need for comprehensive air quality management and policy interventions. Furthermore, the intersection of economic development and air quality has been a focus of research, with findings suggesting that rapid urbanization and economic growth in developing countries are closely associated with increased air pollution levels [@brauer2016ambient].
+
+This study aims to provide a comparative analysis of air quality across global urban centers, focusing on key pollutants: PM~2.5~, NO~2~, O~3~, and CO. Utilizing the "Global Urban Air Pollution Dataset," we explore the spatial distribution of these pollutants, identify patterns and outliers, and investigate the relationship between economic indicators such as Gross Domestic Product (GDP) per capita and air quality indices (AQI). By applying Maher's simplified Poisson distribution model to recent English Premier League data, we also examine the predictive power of team-specific attacking and defensive strengths on football scores as a parallel analytical exercise, highlighting the versatility of statistical methods in environmental and sports analytics.
+
+This comprehensive analysis not only contributes to our understanding of urban air quality patterns but also provides insights into the efficacy of current air pollution mitigation strategies and the potential for economic development to influence environmental health outcomes. By exploring these dimensions, the study aims to inform policy-making and urban planning processes, ultimately contributing to the global effort to improve air quality and public health.
+
+# Data
+
+The escalating concern of air pollution encompasses a wide array of chemical, physical, and biological agents that tarnish the natural quality of both indoor and outdoor environments. Major sources fueling this contamination include household combustion devices, vehicular emissions, industrial activities, and wildfires. Such pollutants pose significant health risks, manifesting in respiratory ailments and other diseases, thereby serving as critical contributors to global morbidity and mortality rates.
+
+The dataset under investigation provides geolocated insights into key pollutants recognized for their public health impacts: NO~2~, O~3~, CO, and Particulate Matter PM~2.5~. Each of these pollutants originates from distinct sources and exhibits unique mechanisms through which they affect human health and the environment:
+
+NO~2~ is primarily emitted from vehicle exhausts, industrial emissions, and through natural phenomena. It is known to exacerbate respiratory conditions and contribute to the development of asthma and respiratory infections, particularly among vulnerable groups such as children, the elderly, and individuals with pre-existing respiratory diseases.
+
+O~3~ at ground level is formed through reactions between oxides of nitrogen and volatile organic compounds under sunlight. Unlike the protective ozone layer in the upper atmosphere, ground-level ozone can cause respiratory issues, reduce lung function, and harm sensitive vegetation.
+
+CO, a colorless and odorless gas, is produced from incomplete combustion of fossil fuels in vehicles, heating appliances, and during industrial processes. High levels of CO can impede the blood's oxygen-carrying capacity, leading to severe health effects, including dizziness, confusion, and at extreme concentrations, death.
+
+PM~2.5~ consists of tiny particles or droplets in the air that can penetrate deep into the respiratory system, causing various health problems. These particles are associated with serious cardiovascular and respiratory diseases and have been classified as a Group 1 carcinogen by the International Agency for Research on Cancer (IARC).
+
+The dataset, named "global air pollution dataset.csv," encompasses the following variables for various cities across different countries:
+
+Country: Name of the country City: Name of the city AQI Value: Overall Air Quality Index value of the city AQI Category: Overall Air Quality Index category of the city Individual AQI Values and Categories for CO, O~3~, NO~2~, and PM~2.5~ Incorporating GDP Data To enhance our understanding of air quality dynamics across different socio-economic contexts, this study integrates Gross Domestic Product (GDP) per capita data for each country, sourced from the World Bank via the WDI package in R. GDP per capita serves as a widely recognized indicator of economic activity and development levels within countries. By correlating GDP data with air quality indices, we aim to explore potential relationships between economic development and pollution levels. This approach is informed by the hypothesis that economic activities, while driving prosperity, might also contribute to environmental degradation, including air pollution..
+
+The integration of GDP per capita data with air quality metrics allows for a multi-dimensional analysis, shedding light on how economic factors interplay with environmental health outcomes. This analysis contributes to the broader discourse on sustainable development, emphasizing the need for economic growth models that prioritize environmental sustainability and public health.
+
+# Methodology
+
+The methodology of this study is designed to explore the intricate dynamics between air pollution and socio-economic factors across various urban centers globally. Utilizing a comprehensive dataset detailing air quality metrics alongside economic indicators, this research aims to dissect the relationship between pollution levels and economic development, focusing on the impact of NO~2~, O~3~, CO, and PM~2.5~ on urban air quality. This section outlines the analytical strategies, and statistical methods employed in the investigation.
+
+## Analytical Approach
+
+The analysis unfolds in several stages and all the analysis were conducted using R [@r].
+
+Data Preprocessing: Initial data cleaning involves handling missing values, removing duplicates, and ensuring the integrity of the dataset for accurate analysis.
+
+Exploratory Data Analysis (EDA): Employing visualizations such as histograms, box plots, and scatter plots to examine the distribution and trends of AQI values for the selected pollutants and to identify outliers or patterns within the data.
+
+In conducting this analysis, several R libraries play crucial roles, each contributing specific functionalities that facilitate data manipulation, visualization, statistical analysis, and the integration of external economic indicators. Below is an overview of these libraries and their respective uses within the context of our study:
+
+The **`tidyverse`** [@tidyverse] suite of packages is instrumental for data manipulation and cleaning tasks. It includes several packages like **`dplyr`** [@dplyr] for data manipulation, **`ggplot2`** [@ggplot2] for data visualization, and **`readr`** [@readr] for reading CSV files efficiently. These tools are essential for preparing the dataset for analysis, allowing for seamless filtering, selection, and transformation of data. **`Lubridate`** [@lubridate] makes it easier to work with dates and times in R. While our dataset primarily focuses on static AQI values and does not include temporal data, **`lubridate`** would be crucial for extending the analysis to time-series data, enabling sophisticated trend analyses over periods. The **`corrplot`** [@corrplot] package is utilized for visualizing correlation matrices, offering a graphical representation of how AQI values for different pollutants correlate with each other and with GDP per capita. This visual insight is invaluable for identifying potential relationships and hypotheses for further investigation. To incorporate economic data into our analysis, the **`WDI`** [@WDI] package is used to fetch World Development Indicators from the World Bank, specifically GDP per capita for the countries included in our dataset. The **`countrycode`** [@countrycode] package aids in converting country names to standardized ISO codes, ensuring consistent matching with the World Bank's data. The **`broom`** [@broom] package tidies up the output of statistical tests and regression models into neat data frames. This functionality is particularly useful for summarizing the results of our linear regression analysis in a way that is both comprehensive and easy to interpret.
+
+### Correlation Analysis:
+
+Evaluating the strength and direction of the relationship between different pollutants' AQI values and between AQI values and GDP per capita, using Pearson's or Spearman's correlation coefficients, depending on the data distribution.
+
+### Regression Analysis:
+
+Conducting linear regression models to assess the impact of GDP per capita on AQI values, adjusting for relevant confounders. This includes assessing the statistical significance of the regression coefficients to understand the extent to which economic development predicts air pollution levels.
+
+### Comparative Analysis:
+
+Comparing air quality metrics across cities and countries, categorizing them by income levels or other relevant economic classifications to explore how pollution levels vary with economic status.
+
+## Ethical Considerations
+
+Given the study's reliance on publicly available data, ethical considerations primarily involve ensuring the anonymity and confidentiality of any identifiable geographic locations or entities. Additionally, the study's interpretations and conclusions are presented with caution, acknowledging the limitations and potential biases inherent in the dataset.
+
+## Limitations
+
+This research acknowledges several limitations, including the potential for discrepancies in air quality reporting standards across countries, the exclusion of indoor air pollution metrics, and the simplistic nature of using GDP per capita as a sole indicator of economic development. Future research may expand upon these preliminary findings by incorporating more nuanced socio-economic variables and employing more complex statistical models. By meticulously navigating through these methodological steps, this study strives to contribute valuable insights into the complex interplay between air pollution and economic development, informing policy decisions aimed at achieving sustainable urban environments.
+
+# Results
+
+## **Preliminary Data Analysis**
+
+### Dataset Overview
+
+The dataset is characterized by a diverse representation of geographical locations, with air quality measurements reported for cities across multiple countries. This diversity allows for a nuanced analysis of air pollution patterns on a global scale. The dataset includes seven character variables identifying the country, city, and AQI categories for each pollutant, alongside five double variables quantifying the AQI values for the overall air quality and for individual pollutants specifically.
+
+### AQI Value Distribution
+
+The AQI values, which serve as a standardized measure of air quality relative to public health impacts, exhibit a broad range from 6 to 500 across the pollutants measured. This range indicates varying degrees of air pollution severity, from "Good" to levels that may pose significant health risks. The median AQI values suggest that urban air quality frequently falls into categories that warrant attention for potential health implications. Histogram of AQI for each pollutant are shown in
+
+-   **PM2.5):** PM2.5 shows a pronounced distribution of AQI values, highlighting its prevalence as a pollutant of concern in urban settings. The PM2.5 AQI values range widely, underscoring the variable impact of particulate matter on urban air quality.
+
+-   **Nitrogen Dioxide (NO2):** The NO2 AQI values, while generally lower than PM2.5, indicate localized areas of elevated pollution, potentially linked to vehicular emissions and industrial activities.
+
+-   **Ozone (O3):** Ozone levels vary significantly, with some urban areas experiencing AQI values indicative of potentially harmful air quality, especially during sunny conditions that facilitate ground-level ozone formation.
+
+-   **Carbon Monoxide (CO):** CO AQI values predominantly fall within the "Good" category, although the presence of higher values in certain locales points to the importance of monitoring combustion-related pollution.
+
+```{r}
+
+source("scripts/load_data.R")
+
+# Now you can call the function
+dataset <- load_data("./data/global air pollution dataset.csv")
+
+```
+
+```{r}
+#| label: fig-histogram-poll
+#| fig-cap: "Histogram of AQI for each pollutant."
+
+source("scripts/plot_histogram_pollutants.R")
+
+# Assuming 'dataset' is already loaded and preprocessed
+plot_histogram_pollutants(dataset)
+
+```
+
+## **Analysis of Top 20 Cities by Average AQI Value Across Pollutants**
+
+Our analysis further delved into identifying urban areas with the highest levels of air pollution, as measured by the Average AQI Value across key pollutants. This comparison sheds light on cities that experience significantly higher pollution levels, potentially indicating areas where public health risks are elevated and where targeted air quality management strategies could be most impactful.
+
+### Highlighting Urban Pollution Hotspots
+
+Figure 2 presents the average AQI values aggregated across all considered pollutants for the top 20 cities. The city of Durango emerges as the most polluted, with an average AQI value of 171.50, signaling a pressing need for interventions to mitigate air pollution's adverse effects. Following closely are cities like Aonla and Bilari, with average AQI values of 159.00 and 155.75, respectively. This ranking underscores the varied intensity of air pollution challenges across different urban settings.
+
+Interestingly, the list includes cities from diverse geographical regions, illustrating that air pollution is a global challenge transcending national boundaries. Cities such as Puranpur, Palia Kalan, and Mailani also feature prominently on this list, with average AQI values exceeding 147.00. This highlights the pervasive nature of air pollution across both developed and developing urban centers.
+
+The presence of Boksburg among the top 20, with an average AQI of 145.00, alongside cities like Moradabad and Gulaothi, emphasizes the widespread issue of urban air pollution. The consistent theme across these cities is the substantial public health risk posed by elevated levels of multiple pollutants, necessitating comprehensive air quality management and policy interventions.
+
+### Implications for Urban Health and Policy
+
+The identification of these pollution hotspots is crucial for prioritizing areas for air quality improvement efforts. It serves as a call to action for local and national governments, policy-makers, and public health officials to implement stringent air quality standards, promote cleaner transportation options, and regulate industrial emissions more effectively.
+
+Furthermore, the data highlights the importance of continuous air quality monitoring and public awareness campaigns to mitigate exposure and inform community responses to pollution events. The integration of economic data, such as GDP per capita, with these findings could further elucidate the socio-economic dimensions of air pollution, guiding targeted interventions that also consider economic sustainability.\
+
+```{r}
+#| label: fig-avg-aqi-city
+#| fig-cap: "Bar chart of average AQI value across pollutants by city."
+
+source("scripts/plot_top_cities_aqi.R")
+
+plot_top_cities_aqi(dataset)
+
+```
+
+## **Analysis of Inter-pollutant Relationships**
+
+Figure 3 presents the correlation matrix illustrating the relationships between Air Quality Index (AQI) values for CO, O~3~, NO~2~, and PM~2.5~. This analysis is pivotal in understanding how various pollutants are interrelated within urban air quality dynamics. The correlation coefficients range from -1 to 1, where values closer to 1 indicate a strong positive correlation, values closer to -1 represent a strong negative correlation, and values near 0 suggest little to no linear relationship between the pollutants.
+
+### Interpretation of Correlation Coefficients
+
+-   **CO and NO~2~:** The correlation coefficient of 0.488 between CO AQI Value and NO~2~ AQI Value indicates a moderate positive correlation. This suggests that areas with higher concentrations of CO often experience higher levels of NO2 as well. Given that both pollutants are commonly emitted from vehicular exhaust and industrial activities, this relationship underscores the combined impact of traffic and industrial emissions on urban air quality.
+
+-   **CO and PM~2.5~:** A correlation coefficient of 0.439 between CO AQI Value and PM~2.5~ AQI Value also indicates a moderate positive correlation, suggesting that increases in CO levels are associated with rises in PM~2.5~ concentrations. This relationship highlights the common sources of these pollutants, particularly from incomplete combustion processes, such as motor vehicles and biomass burning.
+
+-   **Ozone and NO~2~:** The negative correlation coefficient of -0.182 between Ozone AQI Value and NO2 AQI Value reveals an inverse relationship. This can be attributed to the photochemical reactions that produce ground-level ozone; as NO~2~ is a precursor to ozone formation, its initial increase facilitates ozone generation, but subsequent NO~2~ reductions are observed as it is consumed in the reaction process.
+
+-   **Ozone and PM~2.5~:** The correlation coefficient of 0.340 between Ozone AQI Value and PM~2.5~ AQI Value suggests a mild positive correlation. This relationship can vary depending on the local atmospheric chemistry and the presence of volatile organic compounds (VOCs), which, along with NO~2~, contribute to ozone formation.
+
+```{r}
+#| label: fig-corr-matrix
+#| fig-cap: "Correlation matrix showing relationships between different AQI pollutants."
+
+source("scripts/plot_correlation_matrix.R")
+
+plot_correlation_matrix(dataset)
+
+
+```
+
+## **Comparative Analysis of Pollutant Levels Across Urban Centers**
+
+Figure 4 offers a comprehensive comparative analysis of average Air Quality Index (AQI) values for key pollutants across various urban settings. This visualization enables a direct comparison of pollutant levels, shedding light on the relative magnitude and variability of each pollutant's impact on urban air quality.
+
+### Insights from the Boxplot Analysis
+
+-   **Variability and Range:** The boxplots reveal significant variability in AQI values among the pollutants, with PM~2.5~ and NO~2~ exhibiting a wider interquartile range compared to CO and O3. This indicates a higher variability in the concentration levels of PM~2.5~ and NO2 across the sampled cities, underscoring the influence of local emission sources and meteorological conditions on these pollutants' distribution.
+
+-   **Median AQI Values:** The median AQI values highlighted in the boxplots serve as a crucial indicator of central tendency for each pollutant's distribution. Notably, PM~2.5~ tends to have a higher median AQI value, suggesting that particulate matter is a predominant concern in terms of air quality across many urban areas. This aligns with the known health risks associated with PM~2.5~, including respiratory and cardiovascular diseases.
+
+-   **Outliers:** The presence of outliers in the boxplots for each pollutant underscores the existence of extreme AQI values, which are particularly pronounced for PM~2.5~ and NO~2~. These outliers may reflect acute pollution episodes, possibly due to specific local events like wildfires, industrial accidents, or periods of exceptionally high traffic volume.
+
+### Implications for Urban Air Quality Management
+
+The comparative analysis elucidated by Figure 4 emphasizes the critical need for targeted air quality management strategies that address the specific challenges posed by each pollutant. For instance, the pronounced variability and higher AQI values for PM~2.5~ and NO~2~ highlight the importance of interventions aimed at reducing emissions from combustion sources, including vehicular traffic and industrial activities. Similarly, strategies to mitigate ground-level O~3~ may focus on controlling precursors like NO~2~ and volatile organic compounds (VOCs) through regulatory measures and urban planning that promotes reduced vehicular congestion and enhanced green spaces.
+
+```{r}
+#| label: fig-pollutant-comparison
+#| fig-cap: "Comparative analysis of average AQI values for each pollutant."
+
+source("scripts/plot_comparative_pollutant_levels.R")
+
+plot_comparative_pollutant_levels(dataset)
+
+
+```
+
+## **Global Distribution of AQI Values by Category**
+
+Figure 5 illustrates the distribution of Air Quality Index (AQI) values across various categories, ranging from "Good" to "Hazardous," across a global dataset of urban air quality measurements. The histogram categorizes the AQI values into six distinct categories, providing a visual representation of the frequency and distribution of air quality levels experienced worldwide.
+
+### Analysis of AQI Categories
+
+-   **Broad Spectrum of Air Quality:** The analysis reveals a broad spectrum of air quality conditions, with a substantial portion of observations falling within the "Good" and "Moderate" categories. Specifically, 9,688 observations are classified as "Good," with an average AQI of approximately 36.51, indicating relatively clean air conditions that pose little to no risk to public health. Conversely, the "Moderate" category comprises 9,087 observations with an average AQI of 66.46, signaling acceptable air quality, though there may be a moderate health concern for a very small number of individuals who are unusually sensitive to air pollution.
+
+-   **Concerning Levels of Pollution:** The histogram also highlights areas of concern, with 2,215 observations categorized as "Unhealthy," 1,568 as "Unhealthy for Sensitive Groups," 286 as "Very Unhealthy," and 191 as "Hazardous." These categories, particularly the latter three, underscore instances of severely compromised air quality, where the average AQI values soar to 166.73, 121.20, 228.17, and an alarming 440.94 for the "Hazardous" category, respectively. Such conditions represent a significant risk to public health, necessitating urgent action to mitigate pollution levels.
+
+### Implications for Public Health and Policy
+
+The global distribution of AQI values accentuates the varying air quality conditions experienced around the world, with significant disparities in pollution levels. The prevalence of "Unhealthy" to "Hazardous" air quality categories in certain regions underscores the critical need for targeted environmental and public health interventions. These findings support the implementation of stringent air quality management strategies, pollution control measures, and public health initiatives aimed at reducing exposure to harmful pollutants and mitigating the adverse health effects associated with poor air quality.
+
+```{r}
+#| label: fig-global-distribution-aqi
+#| fig-cap: "Histogram showing the global distribution of AQI values across different categories."
+#| fig-width: 10
+#| fig-height: 8
+
+source("scripts/plot_global_aqi_distribution.R")
+
+plot_global_aqi_distribution(dataset)
+
+```
+
+## **Socio-Economic Influences on Urban Air Quality**
+
+Figure 6 presents a compelling visualization of the relationship between economic development, as measured by GDP per capita, and urban air quality, as indicated by average AQI values, across different income classifications. The scatter plot reveals distinct patterns that underscore the complex interplay between economic status and environmental health outcomes.
+
+### Key Observations
+
+-   **High Income vs. Low Income:** High-income countries exhibit lower average AQI values (53.33) with a higher GDP per capita (approximately \$45,237), suggesting better air quality in more economically developed nations. In contrast, low-income countries show higher average AQI values (73.04) with a markedly lower GDP per capita (\$676), indicating poorer air quality. This disparity highlights the potential impact of economic resources on air pollution control and mitigation.
+
+-   **Middle-Income Trends:** Lower middle-income and upper middle-income countries present an interesting gradient, with lower middle-income countries experiencing the highest average AQI values (117.29) at a GDP per capita of approximately \$2,247.94, while upper middle-income countries show moderately high average AQI values (65.49) at a GDP per capita of \$8,590.28. This suggests that as economies grow, there might be an initial increase in pollution levels due to industrialization and urbanization, followed by improvements in air quality as further economic development facilitates better environmental management.
+
+-   **Not Classified and NA Categories:** The "Not classified" category, with an average AQI of 77.72 and undefined GDP per capita, along with the NA category, showing an average AQI of 69.29 with a GDP per capita of \$15,912.30, underscore the challenges in classifying some regions or the lack of economic data for others. These categories emphasize the need for comprehensive data collection to better understand global air quality patterns.
+
+### Implications for Policy and Global Health
+
+The observed relationship between GDP per capita and average AQI values across different income levels underscores the crucial role of economic development in shaping environmental health outcomes. High-income countries likely benefit from advanced pollution control technologies and stricter environmental regulations, contributing to lower AQI values. Conversely, lower-income nations may struggle with the dual challenges of economic development and environmental protection, often prioritizing immediate economic needs over long-term environmental health.
+
+```{r}
+#| label: fig-aqi-gdp-income
+#| fig-cap: "Scatter plot showing the relationship between average AQI values and GDP per capita, categorized by World Bank income levels."
+#| fig-width: 12
+#| fig-height: 8
+
+source("scripts/plot_aqi_vs_gdp.R")
+
+plot_aqi_vs_gdp(dataset)
+
+
+```
+
+## **Concluding Analysis: The Economic Gradient of Air Quality**
+
+The regression analysis conducted on the comprehensive dataset of global urban air quality presents is given in Table 1 and Figure 7 and suggests a statistically significant relationship between AQI values and GNP per capita. The results indicate that for every unit increase in GNP per capita, there is a corresponding decrease in the AQI value by approximately 0.0007205, with a highly significant p-value (\< 2e-16), underscoring the robustness of this association.
+
+### Interpretation of Regression Coefficients
+
+-   **Intercept (89.18):** The intercept suggests that in the absence of economic activity (GNP per capita being 0), the AQI value would theoretically be around 89.18. While this is a hypothetical scenario, given that GNP per capita cannot be zero, it serves as a baseline for understanding the influence of economic factors on air quality.
+
+-   **GNP per Capita Coefficient (-0.0007205):** The negative coefficient of GNP per capita reveals an inverse relationship between economic development and air pollution levels. Specifically, as GNP per capita increases, indicating higher economic development, AQI values tend to decrease, implying better air quality. This relationship may reflect the transition towards cleaner industries, better waste management, and more stringent air quality regulations in higher-income economies.
+
+### Statistical Significance and Model Fit
+
+The model's statistical significance, evidenced by a p-value less than 2e-16 for the GNP per capita coefficient, confirms the impactful role of economic development on air quality. However, the Multiple R-squared value of 0.08486, while significant, suggests that GNP per capita alone explains approximately 8.5% of the variance in AQI values. This indicates that other factors not included in the model also play crucial roles in determining air quality. These could include industrialization levels, urbanization rates, environmental policies, and geographic or climatic conditions.
+
+### Implications for Policy and Future Research
+
+The findings from this analysis underscore the importance of integrating economic development strategies with environmental sustainability and public health objectives. Policymakers and stakeholders are encouraged to consider economic growth models that embrace clean energy, pollution control technologies, and green infrastructure investments. Further research should aim to incorporate additional variables and data sources to provide a more comprehensive understanding of the factors influencing urban air quality, potentially leading to more targeted and effective interventions.
+
+```{r}
+#| label: tbl-summary-table
+#| tbl-cap: "Regression Analysis Summary: Exploring the Impact of GDP per Capita on Average Air Quality Index (AQI)"
+
+source("scripts/perform_regression_analysis.R")
+
+perform_regression_analysis(dataset)
+
+
+```
+
+```{r}
+#| label: fig-aqi-gdp-regression
+#| fig-cap: "Linear Regression Analysis of Average AQI Values Versus GDP per Capita Across Income Levels."
+
+source("scripts/plot_regression_aqi_vs_gdp.R")
+
+
+plot_regression_aqi_vs_gdp(dataset)
+
+
+```
+
+# **Conclusion**
+
+This study embarked on an exploration of the intricate dynamics between economic development and air quality across urban environments worldwide. Through a series of methodical analyses, leveraging a rich dataset encompassing AQI values for critical pollutants CO, O~3~, NO~2~, and PM~2.5~, alongside GDP per capita data, we uncovered insightful patterns and relationships that underscore the complex interplay between economic activity and environmental health.
+
+The initial examination of global AQI distributions revealed a varied landscape of air quality, with significant disparities across different urban centers. The analysis highlighted the prevalence of pollutants, indicating regions where air quality falls into categories that may pose health risks, particularly in areas classified as "Unhealthy" or worse. This underscores the urgent need for targeted interventions to mitigate pollution levels and protect public health.
+
+Further, our comparative analysis across pollutants illustrated the differential impact of various air contaminants on urban air quality. It pointed towards PM~2.5~ and NO~2~ as prominent concerns, reflecting their widespread prevalence and significant health implications. This calls for specific pollution control strategies focusing on reducing emissions from key sources like vehicular traffic and industrial activities.
+
+The correlation analysis between different pollutants offered additional insights into the nature of urban air pollution. It shed light on the interconnectedness of air quality issues, highlighting the need for comprehensive air quality management strategies that address multiple pollutants simultaneously.
+
+The regression analysis delving into the relationship between AQI values and GDP per capita unveiled an inverse correlation, suggesting that higher economic development is generally associated with better air quality. However, the analysis also indicated that GDP per capita alone does not fully account for the variations in air quality, pointing to the multifaceted nature of air pollution and the influence of other factors such as environmental policies, technological advancements, and public awareness.
+
+### **Implications and Future Directions**
+
+The findings from this study have significant implications for policymakers, urban planners, and environmental health practitioners. They emphasize the importance of integrating economic development strategies with environmental sustainability and public health objectives to achieve balanced and sustainable urban growth. The study also highlights the critical role of international cooperation and support in helping lower-income countries tackle air pollution without hindering their economic progress.
+
+Future research should aim to incorporate more nuanced socio-economic variables, explore the impact of specific air quality management interventions, and assess the role of public awareness and behavior change in improving air quality. Additionally, longitudinal studies could provide deeper insights into the temporal dynamics of air pollution and the long-term effectiveness of policy measures.
+
+# References

@@ -15,6 +15,8 @@ perform_regression_analysis <- function(dataset) {
   
   # Performing the regression analysis using individual AQI values and GDP per capita
   lm_model <- lm(`AQI Value` ~ NY.GNP.PCAP.CD, data = merged_data)
+
+  saveRDS(lm_model, file = "lm_model_AQI_vs_GDP.rds")
   
   # Tidying the linear model for a clean summary
   tidy_lm_model <- tidy(lm_model)

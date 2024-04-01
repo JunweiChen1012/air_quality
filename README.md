@@ -12,6 +12,7 @@ The repo is structured as the following:
 
 -   `scripts` contains the R scripts used to simulate, download, clean and validate data, as well as helper functions used in these routines.
 -   `other` contains sketches and LLM statement
+-   `models` contains model fitted data
 
 ## Statement on LLM usage
 some parts of the codes in quarto were written with the help of chatgpt4. all of the chats are added in the Other/LLM/usage.txt.
